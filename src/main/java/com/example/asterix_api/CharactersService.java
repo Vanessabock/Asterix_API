@@ -1,9 +1,11 @@
 package com.example.asterix_api;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CharactersService {
     private final CharacterRepo characterRepo;
+    private final IdService idService;
 
     public List<Characters> getAllCharacters(){
         return characterRepo.findAll();
@@ -31,7 +34,7 @@ public class CharactersService {
 
     public Characters addNewCharacter(CharactersCreate charactersCreate){
         Characters character = new Characters(
-                UUID.randomUUID().toString(),
+                idService.randomId(),
                 charactersCreate.name(),
                 charactersCreate.age(),
                 charactersCreate.profession(),

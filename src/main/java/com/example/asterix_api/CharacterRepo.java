@@ -10,4 +10,5 @@ public interface CharacterRepo extends MongoRepository<Characters, String> {
     List<Characters> findCharactersByAgeOrAll(Integer age);
     List<Characters> findCharactersByAgeAndName(Integer age, String name);
     List<Characters> findCharactersByAge(Integer age);
+    List<Characters> findCharactersById(String id);
 }

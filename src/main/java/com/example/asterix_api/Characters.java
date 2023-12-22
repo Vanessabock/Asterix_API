@@ -7,6 +7,7 @@ public record Characters(
         String id,
         String name,
         int age,
-        String profession
+        String profession,
+        Long createdAt
 ) {
 }

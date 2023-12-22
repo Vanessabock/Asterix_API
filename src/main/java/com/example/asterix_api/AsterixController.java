@@ -1,5 +1,6 @@
 package com.example.asterix_api;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,43 +8,39 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 public class AsterixController {
 
-    private final CharacterRepo characterRepo;
-
-    public AsterixController(CharacterRepo characterRepo){
-        this.characterRepo = characterRepo;
-    }
+    private final CharactersService charactersService;
 
     @GetMapping("/asterix/characters")
-    public List<Characters> getAllCharacters(@RequestParam Optional<Integer> age,
-                                             @RequestParam Optional<String> name){
+    public List<Characters> getAllAll(@RequestParam Optional<String> id,
+                                      @RequestParam Optional<Integer> age,
+                                      @RequestParam Optional<String> name){
         if (age.isPresent() && name.isPresent()){
-            return characterRepo.findCharactersByAgeAndName(age.get(), name.get());
+            return charactersService.findCharactersByAgeAndName(age.get(), name.get());
         }
         if(age.isPresent()){
-            return characterRepo.findCharactersByAge(age.get());
+            return charactersService.findCharactersByAge(age.get());
         }
-        return characterRepo.findAll();
+        if (id.isPresent()){
+            return charactersService.findCharacterById(id.get());
+        }
+        return charactersService.getAllCharacters();
     }
 
     @PostMapping("/asterix/characters")
-    public void addNewCharacter(@RequestBody Characters character){
-        characterRepo.save(character);
+    public Characters addNewCharacter(@RequestBody CharactersCreate charactersCreate){
+        return charactersService.addNewCharacter(charactersCreate);
     }
 
     @PutMapping("/asterix/characters/{id}")
     public void updateAgeById(@PathVariable String id, @RequestParam int age){
-        Optional<Characters> character = characterRepo.findById(id);
-        if(character.isPresent()){
-            characterRepo.delete(character.get());
-            characterRepo.save(character.get().withAge(age));
-        }
+        charactersService.updateAgeById(id, age);
     }
 
     @DeleteMapping("/asterix/characters/{id}")
     public void deleteCharacterById(@PathVariable String id){
-        Optional<Characters> character = characterRepo.findById(id);
-        character.ifPresent(characterRepo::delete);
+        charactersService.deleteCharacterByID(id);
     }
 }
